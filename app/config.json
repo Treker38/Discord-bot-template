@@ -1,0 +1,8 @@
+//remove comments
+{
+  "version": "1.0.0",
+  "defaultPrefix": "$", 
+
+  "token": "", // Add bot token here
+  "mongoPath": "" // Add mongo path here
+}
