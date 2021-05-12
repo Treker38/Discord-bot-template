@@ -2,11 +2,12 @@ module.exports = {
     name: 'Ping',
     commands: ['ping'],
     expectedArgs: '',
-    commandDescription: '',
+    commandDescription: 'Is used to get bot responce time.',
     minArgs: 0,
     maxArgs: 0,
     callback: async(message, arguments, text) => {
-        message.channel.send(`PONG! | Latency is: **${Date.now() - message.createdTimestamp}ms.**`)
-// Send the Bot's current latency.
+// Sends the Bot and API's current latency.
+        ping = Date.now() - message.createdTimestamp
+        message.channel.send(`PONG! | Bot latency: ${ping}ms!, API Latency: ${client.ws.ping}ms!`)
     },
 }
