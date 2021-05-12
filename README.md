@@ -10,9 +10,13 @@ This is where you can obtain your discord Bot token, as well as give your Bot a 
 Getting started with mongoDB
 
 Great resource on getting up to speed on mongoDB by Worn Off Keys, as well as how to setup and get your mongoDB path:
+
 Playlist:
+
 - https://www.youtube.com/watch?v=358kUe0CKiE&list=PLaxxQQak6D_dHXuCYHwgyHwhs225vUX6d&index=2
+
 Worn Off Keys Channel: 
+
 - https://www.youtube.com/channel/UChPrh75CmPP9Ig6jISPnfNA
 
 MongoDB:
