@@ -4,13 +4,15 @@ Discord bot template with an advanced command handler and Per-guild prefix handl
 ## Creating a Discord Bot
 Visit Discord's Developer Portal: https://discordapp.com/developers/applications/ Click "New Application", Enter in your application's name, Click on "Bot" in the settings tab on the side bar, Then click "add bot", yes do it!
 
-This is where you can obtain your discord Bot token, aswell as give your Bot a name and pfp!
+This is where you can obtain your discord Bot token, as well as give your Bot a name and pfp!
 
-## Per-guild prefix's using mongoDB
+## Per-guild prefixes using mongoDB
 Getting started with mongoDB
 
-Great resource on getting up to speed on mongoDB by Worn Off keys, aswell as how to setup and get your mongoDB path:
+Great resource on getting up to speed on mongoDB by Worn Off Keys, as well as how to setup and get your mongoDB path:
+Playlist:
 - https://www.youtube.com/watch?v=358kUe0CKiE&list=PLaxxQQak6D_dHXuCYHwgyHwhs225vUX6d&index=2
+Worn Off Keys Channel: 
 - https://www.youtube.com/channel/UChPrh75CmPP9Ig6jISPnfNA
 
 MongoDB:
@@ -44,27 +46,30 @@ module.exports = {
     //Name: '', Commands: [''] are required.
     
     callback: (message, arguments, text, client) => {
-    //' callback: () =>{}' Excutes the custom command code.
+    //' callback: () =>{}' Executes the custom command code.
     // '(message, arguments, text, client)' Passes through 'message', 'arguments', 'text', 'client'.
     // Must be in that order to properly pass through.
     
     // Text is all arguments joined.
-    // Used to input more then 1 word in an argument.
+    // Used to input more than 1 word in an argument.
     // Set maxArgs to 100 to use text.
     // You can also recreate this with just 
-    //```
+
+    //```js
+
     //arguments.join(" ")
+
     //```
         const input = arguments[0]
-    // Asign the first argument to the const 'input'.
+    // Assign the first argument to the const 'input'.
 
         if(!input){
-    // Check to see if and argument was provided.
-    // If not then excute 'message.channel.send('Hello!')'.
+    // Check to see if an argument was provided.
+    // If not then execute 'message.channel.send('Hello!')'.
           return message.channel.send('Hello!')
     // Sends 'hello' back to the channel that the command was executed in.
     // Then exits the command with return 
-    // Stoping the rest of the code from excuting when we don't want it to.
+    // Stopping the rest of the code from executing when we don't want it to.
         }
     // Else if an argument was provided.
         message.channel.send(input)
@@ -82,5 +87,5 @@ Discord.js Api documentation
 - https://discord.js.org/#/
 - https://discord.com/developers/docs/intro
 
-MongoDb documentation
+MongoDB documentation
 - https://docs.mongodb.com/
