@@ -4,9 +4,11 @@ const prefixSchema = require('./schemas/prefixSchema')
 const { defaultPrefix } = require('../config.json')
 //Import mongo, the getDateTime function, prefixSchema and default prefix.
 
-const guildPrefixes = {}
 // Make a empty guildPrefix object.
+const guildPrefixes = {}
 
+
+// Create the validatePermissions function that is used to check if a given command permissions are real discord permissions.
 const validatePermissions = (permissions) => {
   const validPermissions = [
     'CREATE_INSTANT_INVITE',
@@ -47,31 +49,40 @@ const validatePermissions = (permissions) => {
     }
   }
 }
-// Create the validatePermissions function that is used to check if a given command permissions are real discord permissions.
 
-const allCommands = {}
+
 //Make a empty allCommands object.
+const allCommands = {}
 
 module.exports = (commandOptions) => {
 
+// load commandOptions into a command object and permissions object.
 var {
     commands,
     permissions = [],
   } = commandOptions
-// load commandOptions into a command object and permissions object.
 
+// Ensure the command and aliases are in an array
   if (typeof commands === 'string') {
     commands = [commands]
-// Ensure the command and aliases are in an array
   }
 
-  console.log(`Registering command "${commands[0]}"`)
 // Console log all commands on start up
+  console.log(`Registering command "${commands[0]}"`)
 
+
+// Ensure all aliases are converted to lowercase.
+  for (var i = 0; i < commandOptions.commands.length; i++) {
+    sorted = []
+    sorted.push(commandOptions.commands[i].toLowerCase())
+    
+    commands = sorted
+  }
+
+// Ensure the permissions are in an array and are all valid
   if (permissions.length) {
     if (typeof permissions === 'string') {
       permissions = [permissions]
-// Ensure the permissions are in an array and are all valid
     }
 
 
@@ -79,21 +90,22 @@ var {
 // Run the validatePermissions function.
   }
 
+// Load commandOptions, commands and permissions into allCommands object.
   for (const command of commands){
     allCommands[command] = {
       ...commandOptions,
       commands,
       permissions,
     }
-// Load commandOptions, commands and permissions into allCommands object.
   }
 }
 
+// Updates prefix cache when called.
 module.exports.updateCache = (guildId, newPrefix) => {
   guildPrefixes[guildId] = newPrefix
 }
-// Updates prefix cache when called.
 
+// Loads all guild prefixes on start up.
 module.exports.loadPrefixes = async (client) =>{
   await mongo().then(async mongoose =>{
     try{
@@ -113,26 +125,25 @@ module.exports.loadPrefixes = async (client) =>{
     }
   })
 }
-// Loads all guild prefixes on start up.
 
+// Lstens for discord messages.
 module.exports.listen = (client) => {
   client.on('message', (message) => {
-// Lstens for discord messages.
 
-     if(message.guild === null) return
 // Stop dms from crashing bot.
+     if(message.guild === null) return
 
-      var { member, content, guild } = message
 // Grab member, content, and guild vars from the message object to make code cleaner.
+      var { member, content, guild } = message
 
-      const prefix = guildPrefixes[guild.id] || defaultPrefix
 // Asign current guild prefix to the prefix const.
+      const prefix = guildPrefixes[guild.id] || defaultPrefix
 
-      const arguments = content.split(/[ ]+/)
 // Split the arguments.
+      const arguments = content.split(/[ ]+/)
 
-      const alias = arguments.shift().toLowerCase()
 // Grab the command name.
+      const alias = arguments.shift().toLowerCase()
 
       if(alias.startsWith(prefix)){
         const command = allCommands[alias.replace(prefix, '')]
@@ -140,6 +151,7 @@ module.exports.listen = (client) => {
         if(!command) return
 // If not return
 
+// Asign commandOptions into there own vars.  
         const { 
                 commands,
                 name,
@@ -154,16 +166,16 @@ module.exports.listen = (client) => {
                 expectedArgs,
                 callback,
               } = command
-// Asign commandOptions into there own vars.  
 
+// Ensure the current user has the vaild permissions to run the given command.
           for (const permission of permissions) {
             if (!member.hasPermission(permission)) {
               message.reply(permissionError)
               return
             }
           }
-// Ensure the current user has the vaild permissions to run the given command.
 
+// Ensure the current user has the vaild roles to run the given command.
           for (const requiredRole of requiredRoles) {
             const role = guild.roles.cache.find(
               (role) => role.name === requiredRole
@@ -175,8 +187,8 @@ module.exports.listen = (client) => {
               return
             }
           }
-// Ensure the current user has the vaild roles to run the given command.
 
+// Check to see if the right amount of arguments where given.
           if (
             arguments.length < minArgs ||
             (maxArgs !== null && arguments.length > maxArgs)
@@ -186,13 +198,13 @@ module.exports.listen = (client) => {
             )
             return
           }
-// Check to see if the right amount of arguments where given.
 
-          console.log(`\nThe command --> ("${alias}" with args:"${arguments}" with permissions:"${permissions}") \nRequested by user --> ("${message.author.username}", userId:${message.author.id})\nIn the channel --> ("${message.channel.name}", channelId:${message.channel.id})\nIn the guild --> ("${message.guild}", guildId:${message.guild.id})\nDateTime: ${getDateTime().toISOString()}\nCommand output:`)
 // Console log all command, user and guild info.
+          console.log(`\nThe command --> ("${alias}" with args:"${arguments}" with permissions:"${permissions}") \nRequested by user --> ("${message.author.username}", userId:${message.author.id})\nIn the channel --> ("${message.channel.name}", channelId:${message.channel.id})\nIn the guild --> ("${message.guild}", guildId:${message.guild.id})\nDateTime: ${getDateTime().toISOString()}\nCommand output:`)
 
-          callback(message, arguments, arguments.join(' '), client)
 // Excute the custom command code.
+          callback(message, arguments, arguments.join(' '), client)
+
 
         }
     })
